@@ -25,7 +25,6 @@ class Builder extends Component {
     }
 
     addIngredientHandler = (type) => {
-        debugger;
         const oldCount = this.state.ingredients[type];
         const updatedCount = oldCount + 1;
         const updateIngredients = {
