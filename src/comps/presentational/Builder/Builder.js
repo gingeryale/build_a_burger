@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Aux from '../../hoc/Aux';
 import Burger from "../Burger/Burger";
-import BuildControls from '../BuildControls/BuildControls'
+import BuildControls from '../BuildControls/BuildControls';
+import Modal from '../UI/Modal/Modal';
+import OrderSummary from '../OrderSum/OrderSummary'
 
 const INGREDIENT_PRICES = {
     salad: 2.5,
@@ -18,7 +20,8 @@ class Builder extends Component {
             meat: 0
         },
         totalPrice: 4,
-        purchasable: false
+        purchasable: false,
+        ordering: false
     }
 
     addIngredientHandler = (type) => {
@@ -70,8 +73,16 @@ class Builder extends Component {
         this.setState({ purchasable: sum > 0 })
     }
 
+    purchaseHandler = () => {
+        this.setState({ ordering: true });
+    }
 
-
+    purchaseCancelHandler = () => {
+        this.setState({ ordering: false })
+    }
+    purchaseContinueHandler = () => {
+        alert("dummy")
+    }
 
     render() {
         const disabledInfo = { ...this.state.ingredients }
@@ -80,6 +91,14 @@ class Builder extends Component {
         }
         return (
             <Aux>
+                <Modal show={this.state.ordering} ModalCollapsed={this.purchaseCancelHandler}>
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                        purchCancel={this.purchaseCancelHandler}
+                        purchContinue={this.purchaseContinueHandler}
+                        priceTotal={this.state.totalPrice}
+                    />
+                </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
                     toppings={this.addIngredientHandler}
@@ -87,6 +106,7 @@ class Builder extends Component {
                     disabled={disabledInfo}
                     price={this.state.totalPrice}
                     purchasable={this.state.purchasable}
+                    orderNowClick={this.purchaseHandler}
                 />
             </Aux>
         );
