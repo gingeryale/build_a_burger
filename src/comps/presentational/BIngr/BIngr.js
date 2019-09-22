@@ -37,7 +37,7 @@ class BIng extends Component {
 }
 
 BIng.propTypes = {
-    type: propTypes.string.isRequird
+    type: propTypes.string.isRequired
 }
 
 export default BIng;

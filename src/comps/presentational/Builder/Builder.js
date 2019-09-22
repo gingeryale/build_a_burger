@@ -17,10 +17,12 @@ class Builder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchasable: false
     }
 
     addIngredientHandler = (type) => {
+        debugger;
         const oldCount = this.state.ingredients[type];
         const updatedCount = oldCount + 1;
         const updateIngredients = {
@@ -32,12 +34,14 @@ class Builder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice + toppings;
         this.setState({ totalPrice: newPrice, ingredients: updateIngredients });
+
+        this.updatePurchaseState(updateIngredients);
     }
 
     removeIngredientHandler = (type) => {
         const oldCount = this.state.ingredients[type];
         if (oldCount <= 0) {
-            return
+            return;
         }
         const updatedCount = oldCount - 1;
         const updateIngredients = {
@@ -49,7 +53,25 @@ class Builder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice - minusToppings;
         this.setState({ totalPrice: newPrice, ingredients: updateIngredients });
+
+        this.updatePurchaseState(updateIngredients);
     }
+
+    // sum is the ARRAY of ingredients' value.
+    // reduce the ARRAY to single number by adding its values then evaluate > 0
+    // returns TRUE or FALSE
+
+    updatePurchaseState(ingredients) {
+        const sum = Object.keys(ingredients).map(ingredKey => {
+            return ingredients[ingredKey]
+        }).reduce((sum, el) => {
+            return sum + el;
+        }, 0);
+        this.setState({ purchasable: sum > 0 })
+    }
+
+
+
 
     render() {
         const disabledInfo = { ...this.state.ingredients }
@@ -64,6 +86,7 @@ class Builder extends Component {
                     minusTopping={this.removeIngredientHandler}
                     disabled={disabledInfo}
                     price={this.state.totalPrice}
+                    purchasable={this.state.purchasable}
                 />
             </Aux>
         );
